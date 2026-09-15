@@ -29,3 +29,8 @@ export const deleteUser = async (id) => {
     const res = await api.delete(`${BASE_URL}/${id}`);
     return res.data;
 };
+
+export const toggleUserStatus = async (id, isActive) => {
+  const { data } = await api.patch(`/users/${id}`, { isActive });
+  return data;
+};

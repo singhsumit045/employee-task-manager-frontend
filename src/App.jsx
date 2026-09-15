@@ -3,8 +3,8 @@ import { ThemeProvider, CssBaseline } from '@mui/material';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Login from './pages/Login';
-import Dashboard from './pages/Dashboard';
-import theme from './theme';
+import Dashboard from './pages/Dashboard'; 
+import theme from './theme'; 
 
 function App() {
   return (

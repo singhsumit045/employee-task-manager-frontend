@@ -13,10 +13,10 @@ import {
   Divider,
   Button,
   Chip,
-  Stack,
+  Stack, 
 } from '@mui/material';
 import {
-  TaskAlt,
+  // TaskAlt, 
   KeyboardArrowDown,
   LogoutOutlined,
   PersonOutlined,
@@ -38,7 +38,7 @@ const NAV_LINKS = {
     { label: 'My tasks', path: '/dashboard' },
     { label: 'Team tasks', path: '/team' },
     { label: 'Reports', path: '/reports' },
-    { label: 'Users', path: '/users' },
+    { label: 'Users', path: '/users' },   
   ],
 };
 
@@ -57,25 +57,25 @@ export default function Navbar() {
   const handleLogout = () => {
     handleMenuClose();
     logout();
-    navigate('/login');
+    navigate('/login');  
   };
 
   return (
     <AppBar position="sticky">
       <Toolbar sx={{ gap: 1 }}>
         {/* Brand */}
-          <Stack
-                        direction="row"
-                        spacing={1}
-                        sx={{ mb: 1, display: { xs: 'flex', md: 'none' }, alignItems: 'center' }}
-                    >
-                        <Box
-                            component="img"
-                            src={taskflowLogoDark}
-                            alt="TaskFlow"
-                            sx={{ height: 28, width: 'auto' }}
-                        />
-                    </Stack>
+        <Stack
+          direction="row"
+          spacing={1}
+          // sx={{ mb: 1, display: { xs: 'flex', md: 'none' }, alignItems: 'center' }}  
+        >
+          <Box
+            component="img"
+            src={taskflowLogoDark}
+            alt="TaskFlow"
+            sx={{ height: 28, width: 'auto' }}
+          />
+        </Stack>
 
         {/* Nav links */}
         <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 0.5, flexGrow: 1 }}>

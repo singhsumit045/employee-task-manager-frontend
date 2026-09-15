@@ -13,6 +13,10 @@ import {
     Checkbox,
     FormControlLabel,
     Chip,
+    Menu,
+    MenuItem,
+    ListItemIcon,
+    ListItemText,
 } from '@mui/material';
 import {
     MailOutlined,
@@ -21,12 +25,17 @@ import {
     GroupsOutlined,
     CheckCircleOutlined,
 } from '@mui/icons-material';
+import WhatsAppIcon from '@mui/icons-material/WhatsApp';
+import EmailIcon from '@mui/icons-material/EmailOutlined';      
+import { SiGmail } from 'react-icons/si';
 
 // Two logo variants — put both files at src/assets/
-// White-text version: for the dark left panel (desktop)
 import taskflowLogoWhite from '../assets/taskflow-logo-white-text.png';
-// Black-text version: for white backgrounds (mobile brand mark)
 import taskflowLogoDark from '../assets/taskflow-logo-dark-text.png';
+
+// Admin contact details — move to .env for production
+const ADMIN_WHATSAPP_NUMBER = '919934933658'; // country code + number, no + or spaces
+const ADMIN_EMAIL = 'samratsumit2024@gmail.com';
 
 export default function Login() {
     const [email, setEmail] = useState('');
@@ -39,6 +48,37 @@ export default function Login() {
     const [loading, setLoading] = useState(false);
     const { login } = useAuth();
     const navigate = useNavigate();
+
+    // Contact admin menu state
+    const [anchorEl, setAnchorEl] = useState(null);
+    const contactMenuOpen = Boolean(anchorEl);
+
+    const handleContactClick = (e) => {
+        setAnchorEl(e.currentTarget);
+    };
+
+    const handleContactMenuClose = () => {
+        setAnchorEl(null);
+    };
+
+    const contactAdminOnWhatsApp = () => {
+        const message = 'Hello Admin, I need help logging into TaskFlow.';
+        window.open(
+            `https://wa.me/${ADMIN_WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`,
+            '_blank'
+        );
+        handleContactMenuClose();
+    };
+
+    const contactAdminByEmail = () => {
+        const subject = 'Help with Login';
+        const body = 'Hello Admin, I need help logging into TaskFlow.';
+        const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${ADMIN_EMAIL}&su=${encodeURIComponent(
+            subject
+        )}&body=${encodeURIComponent(body)}`;
+        window.open(gmailUrl, '_blank');
+        handleContactMenuClose();
+    };
 
     const validate = () => {
         let valid = true;
@@ -106,8 +146,8 @@ export default function Login() {
                         top: -120,
                         right: -120,
                     }}
-                />   
-                
+                />
+
                 <Box
                     sx={{
                         position: 'absolute',
@@ -273,7 +313,7 @@ export default function Login() {
                                                     size="small"
                                                     aria-label={showPassword ? 'Hide password' : 'Show password'}
                                                 >
-                                                  {showPassword ? "🙈" : "👁️"}
+                                                    {showPassword ? "🙈" : "👁️"}
                                                 </IconButton>
                                             </InputAdornment>
                                         ),
@@ -321,13 +361,36 @@ export default function Login() {
                         Don't have an account?{' '}
                         <Box
                             component="span"
+                            onClick={handleContactClick}
                             sx={{ color: 'primary.main', fontWeight: 500, cursor: 'pointer' }}
                         >
                             Contact your admin
                         </Box>
                     </Typography>
+
+                    <Menu
+                        anchorEl={anchorEl}
+                        open={contactMenuOpen}
+                        onClose={handleContactMenuClose}
+                        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+                        transformOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+                    >
+                        <MenuItem onClick={contactAdminOnWhatsApp}>
+                            <ListItemIcon>
+                                <WhatsAppIcon fontSize="small" sx={{ color: '#25D366' }} />
+                            </ListItemIcon>
+                            <ListItemText>WhatsApp</ListItemText>
+                        </MenuItem>
+                        <MenuItem onClick={contactAdminByEmail}>
+                            <ListItemIcon>
+                                <EmailIcon fontSize="small" sx={{ color: '#EA4335' }} />
+                            </ListItemIcon>
+                            <ListItemText>Email</ListItemText>
+                        </MenuItem>
+                    </Menu>
                 </Box>
             </Box>
         </Box>
     );
 }
+

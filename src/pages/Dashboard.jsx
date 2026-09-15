@@ -3,22 +3,41 @@ import { Container, Box, Typography, Paper, Stack } from '@mui/material';
 import { useAuth } from '../context/AuthContext';
 import Navbar from '../components/Navbar';
 import TaskList from './TaskList';
-import TaskForm from './TaskForm'; 
+import TaskForm from './TaskForm';
+import EmployeeForm from './EmployeeForm';
+import UserList from './UserList';
 
-export default function Dashboard() { 
-  const { user } = useAuth();  
+export default function Dashboard() {
+  const { user } = useAuth();
   const [refreshKey, setRefreshKey] = useState(0);
+  const [employeeRefreshKey, setEmployeeRefreshKey] = useState(0);
+  const [editingEmployee, setEditingEmployee] = useState(null);
 
   const isManagerOrAdmin = user?.role === 'admin' || user?.role === 'manager';
+  const isAdmin = user?.role === 'admin';
 
   const handleTaskCreated = () => {
-    setRefreshKey((k) => k + 1); 
+    setRefreshKey((k) => k + 1);
   };
- 
+
+  const handleEmployeeSuccess = () => {
+    setEmployeeRefreshKey((k) => k + 1);
+    setEditingEmployee(null);
+  };
+
+  const handleEditEmployee = (employee) => {
+    setEditingEmployee(employee);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleCancelEdit = () => {
+    setEditingEmployee(null);
+  };
+
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: 'background.default' }}>
       <Navbar />
-   
+
       <Container sx={{ py: 4 }}>
         {/* Welcome header */}
         <Stack spacing={0.5} sx={{ mb: 4 }}>
@@ -31,6 +50,48 @@ export default function Dashboard() {
               : 'Here are the tasks assigned to you'}
           </Typography>
         </Stack>
+
+        {/* Employee creation/edit — only admin */}
+        {isAdmin && (
+          <Paper
+            elevation={0}
+            sx={{
+              p: 3,
+              mb: 4,
+              border: '1px solid',
+              borderColor: 'divider',
+              borderRadius: 3,
+            }}
+          >
+            <Typography variant="subtitle1" sx={{ mb: 2 }}>
+              {editingEmployee ? 'Edit employee' : 'Create new employee'}
+            </Typography>
+            <EmployeeForm
+              editingEmployee={editingEmployee}
+              onSuccess={handleEmployeeSuccess}
+              onCancelEdit={handleCancelEdit}
+            />
+          </Paper>
+        )}
+
+        {/* Employee list — only admin */}
+        {isAdmin && (
+          <Paper
+            elevation={0}
+            sx={{
+              p: 3,
+              mb: 4,
+              border: '1px solid',
+              borderColor: 'divider',
+              borderRadius: 3,
+            }}
+          >
+            <Typography variant="subtitle1" sx={{ mb: 2 }}>
+              All employees
+            </Typography>
+            <UserList refreshKey={employeeRefreshKey} onEdit={handleEditEmployee} />
+          </Paper>
+        )}
 
         {/* Task creation — only managers/admins */}
         {isManagerOrAdmin && (

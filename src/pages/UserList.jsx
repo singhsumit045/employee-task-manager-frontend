@@ -10,20 +10,20 @@ import {
     IconButton,
     Stack,
     Alert,
-    CircularProgress,
-    Box,
-    Button,
-    Tabs,
-    Tab,
+    CircularProgress,  
+    Box,   
+    Button,   
+    Tabs,   
+    Tab,   
 } from '@mui/material';
 
-import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutlined';
-import ToggleOnOutlinedIcon from '@mui/icons-material/ToggleOnOutlined';
-import ToggleOffOutlinedIcon from '@mui/icons-material/ToggleOffOutlined';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined'; 
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutlined';   
+import ToggleOnOutlinedIcon from '@mui/icons-material/ToggleOnOutlined';   
+import ToggleOffOutlinedIcon from '@mui/icons-material/ToggleOffOutlined';    
 
-import { getAllUsers, deleteUser, updateUser } from '../services/users';
-import ConfirmDialog from './ConfirmDialog';
+import { getAllUsers, deleteUser, updateUser } from '../services/users';  
+import ConfirmDialog from './ConfirmDialog';  
 
 // Export imports
 import * as XLSX from 'xlsx';
@@ -42,7 +42,7 @@ export default function UserList({ refreshKey, onEdit }) {
     const [error, setError] = useState('');
     const [userToDelete, setUserToDelete] = useState(null);
     const [deleting, setDeleting] = useState(false);
-    const [tab, setTab] = useState('all'); // all | active | inactive
+    const [tab, setTab] = useState('all'); // all | active | inactive 
     const [togglingId, setTogglingId] = useState(null);
 
     const fetchUsers = async () => {
@@ -52,8 +52,8 @@ export default function UserList({ refreshKey, onEdit }) {
             const data = await getAllUsers();
             setUsers(data);
         } catch (err) {
-            setError('Failed to load employees');
-        } finally {
+            setError('Failed to load employees'); 
+        } finally {  
             setLoading(false);
         }
     };
@@ -84,9 +84,9 @@ export default function UserList({ refreshKey, onEdit }) {
         setTogglingId(user.id);
         try {
             if (user.isActive) {
-                await deleteUser(user.id); // soft delete = deactivate
+                await deleteUser(user.id); // soft delete = deactivate   
             } else {
-                await updateUser(user.id, { isActive: true }); // reactivate
+                await updateUser(user.id, { isActive: true }); // reactivate   
             }
             setUsers((prev) =>
                 prev.map((u) =>
@@ -183,32 +183,35 @@ export default function UserList({ refreshKey, onEdit }) {
 
     return (
         <>
-            {/* Status filter tabs */}
-            <Tabs value={tab} onChange={(e, v) => setTab(v)} sx={{ mb: 2 }}>
-                <Tab label={`All (${counts.all})`} value="all" />
-                <Tab label={`Active (${counts.active})`} value="active" />
-                <Tab label={`Inactive (${counts.inactive})`} value="inactive" />
-            </Tabs>
-
-            {/* Export buttons — right aligned, own row */}
             <Stack
                 direction="row"
                 spacing={1}
-                justifyContent="flex-end"
-                sx={{ mb: 2 }}
+
+                sx={{ mb: 2, justifyContent: "row  " }}
             >
+
+                {/* Status filter tabs */}
+                <Tabs value={tab} onChange={(e, v) => setTab(v)} sx={{ mb: 2 }}>
+                    <Tab label={`All (${counts.all})`} value="all" />
+                    <Tab label={`Active (${counts.active})`} value="active" />
+                    <Tab label={`Inactive (${counts.inactive})`} value="inactive" />
+                </Tabs>
+
+                {/* Export buttons — right aligned, own row */} 
+
                 <Button
+                    sx={{ mb: 2, justifyContent: "right" }}
                     variant="outlined"
                     size="small"
-                    onClick={handleExportExcel}
+                    onClick={handleExportExcel}  
                 >
-                    Export Excel
+                       Export Excel
                 </Button>
 
                 <Button
                     variant="contained"
                     size="small"
-                    onClick={handleExportPDF}
+                    onClick={handleExportPDF} 
                 >
                     Export PDF
                 </Button>

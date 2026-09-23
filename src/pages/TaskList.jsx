@@ -1,34 +1,20 @@
 import { useEffect, useState, useMemo } from 'react';
 import {
-  Typography,
-  CircularProgress,
-  Alert,
-  Box,
-  Table,
-  TableHead,
-  TableBody,
-  TableRow,
-  TableCell,
-  TableContainer,
-  Chip,
-  Select,
-  MenuItem,
-  Paper,
-  Grid,
-  Stack,
-  TextField,
-  InputAdornment,
+  Typography,  CircularProgress, Alert, Box,Table,
+  TableHead,  TableBody, TableRow,
+  TableCell, TableContainer, Chip, Select, MenuItem,
+  Paper, Grid,Stack, TextField, InputAdornment,
 } from '@mui/material';
 import { Search as SearchIcon } from '@mui/icons-material';
 import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { taskStatusColor } from '../theme';
 
-const STATUS_OPTIONS = ['todo', 'inProgress', 'done'];
+const STATUS_OPTIONS = ['todo', 'in_progress', 'done'];     
 
 const STATUS_LABELS = {
   todo: 'To Do',
-  inProgress: 'In Progress',
+  in_progress: 'In Progress',
   done: 'Done',
 };
 
@@ -56,7 +42,7 @@ function StatCard({ label, count, color }) {
 }
 
 export default function TaskList() {
-  const { user } = useAuth();
+  const { user } = useAuth(); 
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -143,11 +129,12 @@ export default function TaskList() {
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  <SearchIcon fontSize="small" />
+                  <SearchIcon fontSize="small"/>   
                 </InputAdornment>
               ),
             }}
-          />
+          /> 
+
           <Select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
@@ -178,7 +165,7 @@ export default function TaskList() {
                 {isManagerOrAdmin && <TableCell>Assigned To</TableCell>}
                 <TableCell>Status</TableCell>
               </TableRow>
-            </TableHead>
+            </TableHead>  
             <TableBody>
               {filteredTasks.map((task) => (
                 <TableRow key={task.id} hover>
@@ -242,7 +229,7 @@ export default function TaskList() {
                           color={taskStatusColor[value] || 'default'}
                           size="small"
                         />
-                      )}
+                      )}  
                     >
                       {STATUS_OPTIONS.map((status) => (
                         <MenuItem key={status} value={status}>

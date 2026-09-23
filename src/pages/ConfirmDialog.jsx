@@ -9,7 +9,7 @@ export default function ConfirmDialog({ open, title, message, onConfirm, onCance
                     {message}
                 </Typography>
             </DialogContent>
-            <DialogActions sx={{ px: 3, pb: 2 }}>
+            <DialogActions sx={{ px: 3, pb: 2 }}>   
                 <Button onClick={onCancel} disabled={loading}>
                     Cancel
                 </Button>

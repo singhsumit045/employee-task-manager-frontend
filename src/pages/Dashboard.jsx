@@ -1,13 +1,10 @@
 import { useState } from 'react';
 import {
-  Container,
   Box,
   Typography,
   Paper,
   Stack,
   Grid,
-  Avatar,
-  Chip,
 } from '@mui/material';
 import {
   PersonAdd as PersonAddIcon,
@@ -16,49 +13,49 @@ import {
   Assignment as AssignmentIcon,
 } from '@mui/icons-material';
 import { useAuth } from '../context/AuthContext';
-import Navbar from '../components/Navbar';
+import Navbar, { SIDEBAR_WIDTH } from '../components/Navbar';
 import TaskList from './TaskList';
 import TaskForm from './TaskForm';
 import EmployeeForm from './EmployeeForm';
-import UserList from './UserList';  
+import UserList from './UserList';
 
+// ---- design tokens ----
+const COLORS = {
+  charcoal: '#1F2937',
+  charcoalDark: '#111827',
+  teal: '#0D9488',
+  tealLight: '#2DD4BF',
+  bg: '#F8FAFC',
+  surface: '#FFFFFF',
+  border: '#E5E7EB',
+  textMuted: '#6B7280',
+};
 
-// Reusable section wrapper — MuiPaper already applies border + no shadow globally
-function Section({ icon, title, children }) {
+// Flat panel — hairline border, no shadow. `accent` puts a 3px teal
+// left-edge on the panel that's the primary action for this role.
+function Panel({ icon, title, accent = false, children }) {
   return (
     <Paper
+      elevation={0}
       sx={{
         p: 3,
         mb: 3,
-        borderRadius: 3,
-        transition: 'box-shadow 0.2s ease',
-        '&:hover': {
-          boxShadow: (theme) => theme.shadows[3],
-        },
+        borderRadius: 1,
+        border: `1px solid ${COLORS.border}`,
+        borderLeft: accent ? `3px solid ${COLORS.teal}` : `1px solid ${COLORS.border}`,
       }}
     >
       <Stack direction="row" spacing={1.5} alignItems="center" sx={{ mb: 2.5 }}>
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: 36,
-            height: 36,
-            borderRadius: 2,
-            bgcolor: 'primary.light',
-            color: 'primary.dark',
-          }}
-        >
-          {icon}
-        </Box>
-        <Typography variant="subtitle1">{title}</Typography>
+        <Box sx={{ display: 'flex', color: COLORS.teal }}>{icon}</Box>
+        <Typography variant="subtitle1" sx={{ fontWeight: 600, color: COLORS.charcoalDark }}>
+          {title}
+        </Typography>
       </Stack>
       {children}
     </Paper>
   );
 }
-
+  
 export default function Dashboard() {
   const { user } = useAuth();
   const [refreshKey, setRefreshKey] = useState(0);
@@ -68,119 +65,79 @@ export default function Dashboard() {
   const isManagerOrAdmin = user?.role === 'admin' || user?.role === 'manager';
   const isAdmin = user?.role === 'admin';
 
-  const handleTaskCreated = () => {
-    setRefreshKey((k) => k + 1);
-  };
-
+  const handleTaskCreated = () => setRefreshKey((k) => k + 1);
   const handleEmployeeSuccess = () => {
     setEmployeeRefreshKey((k) => k + 1);
     setEditingEmployee(null);
   };
-
   const handleEditEmployee = (employee) => {
     setEditingEmployee(employee);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
-
-  const handleCancelEdit = () => {
-    setEditingEmployee(null);
-  };
-
-  const initials = user?.name
-    ? user.name.split(' ').map((n) => n[0]).join('').slice(0, 2).toUpperCase()
-    : 'U';
+  const handleCancelEdit = () => setEditingEmployee(null);
 
   return (
-    <Box sx={{ minHeight: '100vh', bgcolor: 'background.default' }}>
+    <Box sx={{ minHeight: '100vh', bgcolor: COLORS.bg }}>
       <Navbar />
 
-      {/* Welcome header — teal gradient matching theme.palette.primary */}
-      <Box
-        sx={{
-          background: 'linear-gradient(135deg, #0F766E 0%, #0D9488 55%, #2DD4BF 100%)',
-          color: '#FFFFFF',
-          py: { xs: 4, md: 5 },
-          mb: 4,
-        }}
-      >
-        <Container>
-          <Stack direction="row" spacing={2} alignItems="center">
-            <Avatar
-              sx={{
-                width: 56,
-                height: 56,
-                bgcolor: 'rgba(255,255,255,0.18)',
-                color: '#FFFFFF',
-                fontWeight: 600,
-                fontSize: 20,
-              }}
-            >
-              {initials}
-            </Avatar>
-            <Stack spacing={0.5}>
-              <Typography variant="h5" sx={{ color: '#FFFFFF' }}>
-                {isManagerOrAdmin ? 'Team overview' : 'My tasks'}
-              </Typography>
-              <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.85)' }}>
-                {isManagerOrAdmin
-                  ? 'Create, assign and track tasks across your team'
-                  : 'Here are the tasks assigned to you'}
-              </Typography>
-            </Stack>
-            <Chip
-              label={user?.role?.toUpperCase() || 'EMPLOYEE'}
-              size="small"
-              sx={{
-                ml: 'auto',
-                bgcolor: 'rgba(255,255,255,0.18)',
-                color: '#FFFFFF',
-                display: { xs: 'none', sm: 'flex' },
-              }}
-            />
-          </Stack>
-        </Container>
-      </Box>
-
-<Container maxWidth="xl" sx={{ pb: 5 }}>
-  <Grid container spacing={3}>
-    <Grid item xs={12} md={isManagerOrAdmin ? 5 : 12}>
-      {/* Employee creation/edit — only admin */}
-      {isAdmin && (
-        <Section
-          icon={<PersonAddIcon fontSize="small" />}
-          title={editingEmployee ? 'Edit employee' : 'Create new employee'}
+      <Box sx={{ ml: { xs: 0, md: `${SIDEBAR_WIDTH}px` }, pt: { xs: 8, md: 0 } }}>
+        {/* Top bar — page title, no gradient hero */}
+        <Box
+          sx={{
+            px: { xs: 2, md: 4 },
+            py: 2.5,
+            borderBottom: `1px solid ${COLORS.border}`,
+            bgcolor: COLORS.surface,
+          }}
         >
-          <EmployeeForm
-            editingEmployee={editingEmployee}
-            onSuccess={handleEmployeeSuccess}
-            onCancelEdit={handleCancelEdit}
-          />
-        </Section>
-      )}
+          <Typography variant="h6" sx={{ fontWeight: 600, color: COLORS.charcoalDark }}>
+            {isManagerOrAdmin ? 'Team overview' : 'My tasks'}
+          </Typography>
+          <Typography variant="body2" sx={{ color: COLORS.textMuted }}>
+            {isManagerOrAdmin
+              ? 'Create, assign and track tasks across your team'
+              : 'Here are the tasks assigned to you'}
+          </Typography>
+        </Box>
 
-      {/* Task creation — only managers/admins */}
-      {isManagerOrAdmin && (
-        <Section icon={<AddTaskIcon fontSize="small" />} title="Create a new task">
-          <TaskForm onTaskCreated={handleTaskCreated} />
-        </Section>
-      )}
+        <Box sx={{ p: { xs: 2, md: 4 } }}>
+          <Grid container spacing={3}>
+            <Grid item xs={12} md={isManagerOrAdmin ? 5 : 12}>
+              {isAdmin && (
+                <Panel
+                  icon={<PersonAddIcon fontSize="small" />}
+                  title={editingEmployee ? 'Edit employee' : 'Create new employee'}
+                  accent
+                >
+                  <EmployeeForm
+                    editingEmployee={editingEmployee}
+                    onSuccess={handleEmployeeSuccess}
+                    onCancelEdit={handleCancelEdit}
+                  />
+                </Panel>
+              )}
 
-      {/* Employee list — only admin */}
-      {isAdmin && (
-        <Section icon={<GroupIcon fontSize="small" />} title="All employees">
-          <UserList refreshKey={employeeRefreshKey} onEdit={handleEditEmployee} />
-        </Section>
-      )}
-    </Grid>
-  </Grid>
+              {isManagerOrAdmin && (
+                <Panel icon={<AddTaskIcon fontSize="small" />} title="Create a new task" accent>
+                  <TaskForm onTaskCreated={handleTaskCreated} />
+                </Panel>
+              )}
 
-  {/* Tasks — always full width, own row below the forms */}
-  <Box sx={{ mt: 3 }}>
-    <Section icon={<AssignmentIcon fontSize="small" />} title="Tasks">
-      <TaskList key={refreshKey} />
-    </Section>
-  </Box>
-</Container>
+              {isAdmin && (
+                <Panel icon={<GroupIcon fontSize="small" />} title="All employees">
+                  <UserList refreshKey={employeeRefreshKey} onEdit={handleEditEmployee} />
+                </Panel>
+              )}
+            </Grid>
+          </Grid>
+
+          <Box sx={{ mt: 1 }}>
+            <Panel icon={<AssignmentIcon fontSize="small" />} title="Tasks">
+              <TaskList key={refreshKey} />
+            </Panel>
+          </Box>
+        </Box>
+      </Box>
     </Box>
   );
 }
